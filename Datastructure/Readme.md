@@ -80,9 +80,9 @@ Tree는 비선형 자료구조이며, 계층적 관계(Hierarchical Relationship
 
 #### Binary Tree 순회 방법
 
-* 1. 전위 순회 (Preorder) : 루트 -> 왼쪽 -> 오른쪽
-* 2. 중위 순회 (Inorder) : 왼쪽 -> 루트 -> 오른쪽
-* 3. 후위 순회 (Postorder) : 왼쪽 -> 오른쪽 -> 루트
+* 전위 순회 (Preorder) : 루트 -> 왼쪽 -> 오른쪽
+* 중위 순회 (Inorder) : 왼쪽 -> 루트 -> 오른쪽
+* 후위 순회 (Postorder) : 왼쪽 -> 오른쪽 -> 루트
 
 #### Skewed Binary Tree (편향 이진 트리)
 
