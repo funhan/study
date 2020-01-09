@@ -136,11 +136,13 @@ max heapify는 루트 노드의 값이 자식 노드의 값보다 작으면, 두
 
 ### Map 
 
+C++에서 STL인 Map은 원소를 key와 value의 쌍으로 저장한다. 이때, key는 중복을 허용하지 않습니다. Map은 Red-Black tree로 구현되어있다. 
 
 </br>
 
 ### Set
 
+C++에서 STL인 Set은 Map과 유사한데, 이때, key만 있고 value는 없는 Map이라고 생각할 수 있다. key는 중복을 허용하지 않습니다. Set은 Red-Black tree로 구현되어있다. 
 
 </br>
 
