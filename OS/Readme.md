@@ -103,25 +103,57 @@ PC 값은 스레드가 명령어의 어디까지 수행하였는지를 저장하
 각각의 Queue에 프로세스들을 넣고 빼주는 스케줄러에도 크게 세 가지 종류가 존재한다. 
 
 
-## 장기 스케줄러 (Long-term scheduler or Job scheduler)
+## 장기 스케줄러 (Long-term Scheduler or Job Scheduler)
 
 메모리는 한정되어 있는데 많은 프로세스들이 한꺼번에 메모리에 올라올 경우, 대용량 메모리(일반적으로 디스크)에 임시로 저장된다. 이 pool에 저장되어 있는 프로세스 중 어떤 프로세스에 메모리를 할당하여 ready queue로 보낼지 결정하는 역할을 한다.
 
 * 메모리와 디스크 사이의 스케줄링을 담당 
 * 프로세스에 메모리 및 각종 리소스를 할당(admit)
 * degree of Multiprogramming 제어 (메모리에 여러 프로그램이 올라가는 것) 
-
-몇 개의 프로그램이 올라갈 것인지를 제어
+  몇 개의 프로그램이 올라갈 것인지를 제어
 
 * 프로세스의 상태
+  new -> ready(in memory)
 
-new -> ready(in memory)
+_cf) 메모리에 프로그램이 너무 많이 올라가도, 너무 적게 올라가도 성능이 좋지 않은 것이다. 참고로 time sharing system에서는 장기 스케줄러가 없다. 그냥 곧바로 메모리에 올라가 ready 상태가 된다._
 
-_cf) 메모리에 프로그램이 너무 많이 올라가도, 너무 적게 올라가도 성능이 좋지 않은 것이다. 참고로 time sharing system에서는 장기 스케줄러가 없다. 그냥 곧바로 메모리에 올라가 ready 상태가 된다.
+</br>
+
+## 단기 스케줄러 (Short-term Scheduler or CPU Scheduler)
+
+* CPU와 메모리 사이의 스케줄링을 담당
+* Ready Queue에 존재하는 프로세스 중 어떤 프로세스를 running 시킬지 결정
+* 프로세스에 CPU를 할당 (schedule dispatch)
+* 프로세스의 상태
+  ready -> running -> waiting -> ready
+
+</br>
+
+## 중기 스케줄러 (Medium-term Scheduler or Swapper)
+
+* 여유 공간 마련을 위해 프로세스를 통째로 메모리에서 디스크로 쫓아냄 (swapping)
+* 프로세스에게서 메모리를 deallocate
+* degree of Multiprogamming 제어
+* 현 시스템에서 메모리에 너무 많은 프로그램이 동시에 올라가는 것을 조절하는 스케줄러
+* 프로세스의 상태
+  ready -> suspended
+
+### Process state - suspended
+
+Suspended(stopped) : 외부적인 이유로 프로세스의 수행이 정지된 상태로 메모리에서 내려간 상태를 의미한다. 프로세스 전부 디스크로 swap out된다. blocked 상태는 다른 I/O 작업을 기다리는 상태이기 때문에 스스로 ready state로 돌아갈 수 있지만, 이 상태는 외부적인 이유로 suspending 되었기 때문에 스스로 돌아갈 수 없다.
 
 
+</br>
 
 
+# CPU 스케줄러 (Short-term 스케줄러)
+
+운영체제가 프로세스를 프로세서에 할당하는 것을 디스패치(Dispatch)라고 한다. (이때 프로세스의 상태 : ready -> running) 그리고 운영체제가 Ready Queue에 있는 프로세스들 중에서 어떤 프로세스를 디스패치할 것이나 정하는 것이 프로세스 스케줄링이다.
+
+스케줄링 알고리즘에는 대표적으로 FCFS, SJF, SRF, RR 네 가지 방식이 있다. 
+알고리즘을 평가할 때는 수행 시간(Burst time)과 CPU 사용량(CPU utilization), 단위 시간 당 끝마친 프로세스의 수(Throughput), 하나의 프로세스가 ready queue에서 대기한 시간부터 작업을 마칠 때까지 걸리는 시간(Turnaround time), 프로세스각 ready queue에서 대기한 시간(waiting time), 프로세스가 처음으로 CPU를 할당받기까지 걸린 시간(Response time)을 기준으로 한다. 
+
+선점(Preemptive) 방식과 비선점(Non-Preemptive) 방식으로 나뉜다. 선점 스케줄링은 운영체제가 강제로 프로세스의 사용권을 통제하는 방식이고, 비선점 스케줄링은 프로세스가 스스로 다음 프로세스에게 자리를 넘겨주는 방식이다. 즉, 선점 스케줄링 방식에서는 CPU에 프로세스가 할당되어 있을 때도 운영체제가 개입해 다른 프로세스에게 CPU를 할당할 수 있다. 
 
 
 
