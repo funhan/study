@@ -1,1 +1,70 @@
-ㄹ
+# 상호 배타적 집합
+
+상호 배타적인 부분 집합들로 나눠진 원소들에 대한 정보를 저장하고 조작하는 자료구조로 유니온-파인드라고 함. 이를 구현하기 위해서는 다음과 같은 연산이 필요.
+
+- 초기화 : n개의 원소가 각각의 집합에 포함되어 있도록 초기화
+- 합치기(union) 연산 : 두 원소 a, b가 주어질 때 이들이 속한 두 집합을 하나로 합침.
+- 찾기(find) 연산 : 어떤 원소 a가 주어질 때 이 원소가 속합 집합을 반환.
+
+## 트리를 이용한 상호 배타적 집합 표현
+
+상호 배타적 집합을 트리로 표현하면 유용하게 사용할 수 있음. 한 집합에 속하는 원소들을 하나의 트리로 묶고, 두 원소가 같은 트리에 속해 있는지 확인할 때는 각 원소가 포함된 트리의 루트를 찾아 비교하여 확인할 수 있음.
+
+
+### Naive한 상호 배타적 집합 구현
+
+```cpp
+// 트리를 이용해 상호 배타적 집합을 구현
+struct NaiveDisjointSet {
+	vector<int> parent;
+	NaiveDisjointSet(int n) : parent(n) {
+		for(int i=0;i<n;++i) 
+			parent[i] = i;
+	}
+	// u가 속한 트리의 루트의 번호를 반환
+	int find(int u) const {
+		if(u == parent[u]) return u;
+		return find(parent[u]);
+	}
+	// u가 속한 트리가 v가 속한 트리를 합침
+	void merge(int u, int v) {
+		u = find(u); v = find(v);
+		// u와 v가 이미 같은 트리일 경우 걸러냄
+		if(u == v) return;
+		parent[u] = v;
+	}
+};
+
+```
+
+### OPtimize한 상호 배타적 집합 구현
+
+naive한 방법은 트리를 합칠 때 한쪽으로 기울어진 트리가 될 가능성이 있음. 따라서 두 트리를 합칠 때 항상 높이가 더 낮은 트리를 더 높은 트리 밑에 집어넣어 트리의 높이가 높아지는 것을 방지.(O(logn)) 
+또한 찾기 연산이 중복된 계산을 여러 번 하는 문제가 있어 find(u)로 u가 속하는 트리의 루트를 찾았으면, u의 parent를 바로 트리의 루트로 함. 이 최적화를 경로 압축(path compression) 최적화라고 부름.(O(a(n)), a(n) - 애커만 함수)
+
+```cpp
+// 트리를 이용해 상호 배타적 집합을 구현
+struct NaiveDisjointSet {
+	vector<int> parent, rank;
+	NaiveDisjointSet(int n) : parent(n), rank(n, 1) {
+		for(int i=0;i<n;++i) 
+			parent[i] = i;
+	}
+	// u가 속한 트리의 루트의 번호를 반환
+	int find(int u) const {
+		if(u == parent[u]) return u;
+		return parent[u] = find(parent[u]);
+	}
+	// u가 속한 트리가 v가 속한 트리를 합침
+	void merge(int u, int v) {
+		u = find(u); v = find(v);
+		// u와 v가 이미 같은 트리일 경우 걸러냄
+		if(u == v) return;
+		if(rank[u] > rank[v]) swap(u, v);
+		// 이제 rank[v]가 항상 rank[u] 이상이므로 u를 v의 자식으로 넣음.
+		parent[u] = v;
+		if(rank[u] == rank[v]) ++rank[v];
+	}
+};
+
+```
