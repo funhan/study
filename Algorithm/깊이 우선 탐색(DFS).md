@@ -58,9 +58,50 @@ void dfsAll() {
 - 역방향 간선(back edge) : 스패닝 트리의 자손에서 선조로 연결되지만 트리 간선이 아닌 간선
 - 교차 간선(cross edge) : 트리에서 선조와 자손 관계가 아닌 정점들 간에 연결된 간선. 위 세 가지를 제외한 간선.  
 
+*무방향 그래프에서는 양방향으로 통행이 가능하므로 교차 간선이 있을 수 없음. 또한 순방향 간선과 역방향 간선의 구분이 없음.*
 
-*무방향 그래프에서는 양방향으로 통행이 가능하므로 교차 간선이 있을 수 없음. 또한 순방향 간선과 역방향 간선의 구분이 없음.
 
+### 사이클 존재 여부 확인
+
+사이클의 존재 여부는 역방향 간선의 존재 여부와 동치임. 사이클에 포함된 정점 중 깊이 우선 탐색 과정에서 처음 만나는 정점을 u라고 하면, dfs(u)는 u에서 갈 수 있는 정점들을 모두 방문한 후에 종료됨. 따라서 깊이 우선 탐색은 사이클에서 u 이전에 있는 정점을 dfs(u)가 종료하기 전에 방문하게 되는데, 그러면 이 정점에서 u로 가는 정점은 항상 역방향 간선이 됨.
+
+## 간선 구분 구현 코드
+```cpp
+// 그래프의 인접 리스트 표현
+vector<vector<int>> adj;
+// dicovered[i] = i번 정점의 발견 순서
+// finished[i] = dfs(i)가 종료 여부
+vector<int> discovered, finished;
+// 지금까지 발견한 정점의 수
+int counter;
+
+void dfs(int here) {
+	dicovered[here] = counter++;
+	// 모든 인접 정점을 순회
+	for(int i=0;i<adj[here].size();++i) {
+		int there = adj[here][i];
+		cout << "(" << here << "," << there << ") is a ";
+		// 방문한 적이 없다면 방문
+		if(discovered[there] == -1) {
+			cout << "tree edge" << endl;
+			dfs(there);
+		}
+		// 만약 there가 here보다 늦게 발견됐으면 there는 here의 후손
+		else if(discovered[here] < discovered[there]) {
+			cout << "forward edge" << endl;
+		}
+		// 만약 dfs(there)가 아직 종료하지 않았으면 there은 here의 선조
+		else if(finished[there] == 0) {
+			cout << "back edge" << endl;
+		}
+		// 이 외의 경우 교차 간선
+		else {
+			cout << "cross edge" << endl;
+		}
+	}
+	finished[here] = 1;
+}
+```
 
 
 
